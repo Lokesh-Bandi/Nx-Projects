@@ -1,0 +1,73 @@
+{
+  "name": "js-ds",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/js-ds/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/js-ds",
+        "index": "apps/js-ds/src/index.html",
+        "baseHref": "/",
+        "main": "apps/js-ds/src/main.js",
+        "tsConfig": "apps/js-ds/tsconfig.app.json",
+        "assets": ["apps/js-ds/src/favicon.ico", "apps/js-ds/src/assets"],
+        "styles": ["apps/js-ds/src/styles.css"],
+        "scripts": [],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/js-ds/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/js-ds/src/environments/environment.js",
+              "with": "apps/js-ds/src/environments/environment.prod.js"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/webpack:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "js-ds:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "js-ds:build:development"
+        },
+        "production": {
+          "buildTarget": "js-ds:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/js-ds/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}
