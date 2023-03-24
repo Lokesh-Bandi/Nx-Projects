@@ -3,16 +3,36 @@ import { Global, css } from '@emotion/react';
 import InputForm from '../components/InputForm';
 import { useState } from 'react';
 import styled from '@emotion/styled';
+import SideBar from '../components/SideBar';
 
 
 const StyledApp = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  margin: 20px;
+  gap: 20px;
+`;
+
+const StyledAppBody = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 20px;
+  gap: 20px;
+  flex-grow: 1;
+
+`;
+
+const StyledHeader = styled.div``;
+const StyledBody = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
   margin: 20px;
   gap: 20px;
+  flex-grow: 1;
 `;
 
 export function App() {
@@ -73,10 +93,17 @@ export function App() {
       text-align: center;
     }
     `} />
-    <h3>Dynamic Form</h3>
     <StyledApp>
-      <InputForm setInput={setInput} />
-      <DynamicForm input={input} width={'300px'}/>
+      <SideBar />
+      <StyledAppBody>
+        <StyledHeader>
+          <h3>Dynamic Form</h3>
+        </StyledHeader>
+        <StyledBody>
+          <InputForm setInput={setInput} />
+          <DynamicForm input={input} width={'300px'}/>
+        </StyledBody>
+      </StyledAppBody>
     </StyledApp>
   </>
 }
