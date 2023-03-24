@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 const StyledSideBar = styled.div`
     min-width: 150px;
@@ -17,10 +18,10 @@ const StyledSideBarItem = styled.div`
     border-radius: 10px;
 `;
 export default function SideBar() {
-  const sideBarItemArray = ['Dynamic form', 'Spiral Algo', 'Coming soon...', 'Coming soon...' ]
+  const sideBarItemArray = {'Dynamic form' : '/', 'Spiral Algo' : '/spiralAlgoAnimation', 'Coming soon...' : '/', 'Coming soon...1' : '/' }
   return <StyledSideBar>
-    {sideBarItemArray.map((item, index) => {
-        return <StyledSideBarItem>{item}</StyledSideBarItem>
+    {Object.keys(sideBarItemArray).map((item, index) => {
+        return <StyledSideBarItem><Link to={sideBarItemArray}>{item}</Link></StyledSideBarItem>
     })}
   </StyledSideBar>
 }
