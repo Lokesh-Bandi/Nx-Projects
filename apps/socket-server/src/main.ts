@@ -16,11 +16,15 @@ app.use(index);
 
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+      origin: "http://localhost:4500"
+    }
+  });
 
 let interval;
 io.on('connection', (socket) => {
-    console.log('New Client Connected');
+    console.log('New Client Connected', socket.id);
     if(interval){
         clearInterval(interval);
     }
@@ -28,7 +32,6 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('Client Disconnected');
     })
-    clearInterval(interval);
 })
 
 server.listen(port, () => console.log('Listening on port 4500'));

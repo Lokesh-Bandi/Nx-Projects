@@ -38,7 +38,7 @@ export default function Layout() {
   const sideBarItemArray = {
     'Dynamic form': '/',
     'Spiral Algo': '/spiralAlgoAnimation',
-    'Coming soon...': '/',
+    'Socket Client': '/socketClient',
     'Coming soon...1': '/',
   };
 
