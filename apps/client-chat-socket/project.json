@@ -1,0 +1,76 @@
+{
+  "name": "client-chat-socket",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/client-chat-socket/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/client-chat-socket",
+        "index": "apps/client-chat-socket/src/index.html",
+        "baseHref": "/",
+        "main": "apps/client-chat-socket/src/main.js",
+        "tsConfig": "apps/client-chat-socket/tsconfig.app.json",
+        "assets": [
+          "apps/client-chat-socket/src/favicon.ico",
+          "apps/client-chat-socket/src/assets"
+        ],
+        "styles": [],
+        "scripts": [],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/client-chat-socket/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/client-chat-socket/src/environments/environment.js",
+              "with": "apps/client-chat-socket/src/environments/environment.prod.js"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/webpack:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "client-chat-socket:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "client-chat-socket:build:development"
+        },
+        "production": {
+          "buildTarget": "client-chat-socket:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/client-chat-socket/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}
