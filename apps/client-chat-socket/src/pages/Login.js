@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import firebase from '../firebase/firebase.js';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const StyledLoginDiv = styled.div`
   display: flex;
@@ -16,6 +18,7 @@ const StyledLoginDiv = styled.div`
   background: ${(props) => props.theme.header.bgColor};
   font-family: 'Times New Roman', Times, serif;
   border-radius: 15px;
+  box-sizing: border-box;
 `;
 const StyledInput = styled.input`
   flex-grow: 1;
@@ -68,12 +71,9 @@ export default function Login() {
   const [mobileNumber, setMobileNumber] = useState('+911234509876');   
   const navigate = useNavigate();  
   const auth = getAuth();
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [showOTPField, setShowOTPField] = useState(false);
+  auth.settings.appVerificationDisabledForTesting = true;
+  const [isOTPSent, setisOTPSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const [finalOTP, setFinalOTP] = useState("");
-
-
 
   const setRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -81,32 +81,29 @@ export default function Login() {
       'callback': (response) => {
         // reCAPTCHA solved, allow signInWithPhoneNumber.
         // ...
-        console.log(response);
-        setUserLoggedIn(true);
+        setisOTPSent(true);
       },
       'expired-callback': () => {
         // Response expired. Ask user to solve reCAPTCHA again.
         // ...
-        console.log("Expired")
+        console.log("Expired");
       }
     }, auth);
   }
 
-  const onSignInSubmit = (event) => {
+  const sendOTP = (event) => {
     event.preventDefault();
     setRecaptcha();
     let phoneNumber = mobileNumber;
     let appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
     .then((confirmationResult) => {
-      console.log(confirmationResult.confirm)
       window.confirmationResult = confirmationResult;
     })
   }
 
   
   const handleInputChange = (event) => {
-    console.log(event.target.id);
     if(event.target.id === 'otp'){
       setOtp(event.target.value);
     }
@@ -114,11 +111,9 @@ export default function Login() {
       setMobileNumber(event.target.value);
     }
   } 
-  const sendOTPHandle = (event) => {
-    onSignInSubmit(event);
-  };
+  
 
-  const verifyHandle = (event) => {
+  const verifyOTPCode = (event) => {
     const code = otp;
     window.confirmationResult.confirm(code).then((result) => {
       // User signed in successfully.
@@ -126,19 +121,47 @@ export default function Login() {
       console.log(user);
       navigate('/chat');
     }).catch((error) => {
-      //Catch Error
-    });
+      toast.error('Invalid Verification Code', {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0 ,
+        theme: "colored",
+        });
+    })
   }
+
+
   return (
     <StyledLoginDiv>
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <StyledTitle>Login</StyledTitle>
       <StyledInputDiv>
         <StyledCodeBox>+91</StyledCodeBox>
         <StyledInput type="text" id='phoneNumber' onChange={handleInputChange} value={mobileNumber} placeholder="Enter your phone number" />
       </StyledInputDiv>
-      <div id='recaptcha-container' className={userLoggedIn ? 'hide' : '' }></div>
-      { userLoggedIn && <StyledInput type="text" id='otp' onChange={handleInputChange} value={otp} placeholder="Enter OTP" />}
-      { !userLoggedIn ? <StyledButton onClick={sendOTPHandle}>Send OTP</StyledButton> : <StyledButton onClick={verifyHandle}>Verify</StyledButton>}
+      { isOTPSent && 
+        <StyledInputDiv>
+          <StyledCodeBox>OTP</StyledCodeBox>
+          <StyledInput type="text" id='otp' onChange={handleInputChange} value={otp} placeholder="Enter OTP" />
+        </StyledInputDiv>
+      }
+      { !isOTPSent ? <StyledButton onClick={sendOTP}>Send OTP</StyledButton> : <StyledButton onClick={verifyOTPCode}>Verify</StyledButton>}
+      <div id='recaptcha-container'></div>
     </StyledLoginDiv>
   );
 }

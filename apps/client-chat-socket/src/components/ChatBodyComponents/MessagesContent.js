@@ -34,7 +34,7 @@ export default function MessagesContent() {
   return (
     <StyledMessagesDiv>
         {[...Array(22)].map((item, ind) => {
-            return <StyledMessage className='font-message' currentUser={ind%2===0}>
+            return <StyledMessage key={ind} className='font-message' currentUser={ind%2===0}>
             Hello!!! I'm back to build....Hello!!! I'm back to build.... {ind}
         </StyledMessage>
         })}

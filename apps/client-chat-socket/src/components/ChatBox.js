@@ -11,6 +11,7 @@ const StyledChatDiv = styled.div`
     background: ${props => props.theme.header.bgColor};
     font-family: "Times New Roman", Times, serif;
     border-radius: 15px;
+    box-sizing: border-box;
 `
 
 const ChatBox = () => {
