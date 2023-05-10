@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import firebase from '../firebase/firebase.js';
@@ -71,20 +71,23 @@ export default function Login() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [showOTPField, setShowOTPField] = useState(false);
   const [otp, setOtp] = useState("");
+  const [finalOTP, setFinalOTP] = useState("");
+
 
 
   const setRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-      'size': 'normal',
+      'size': 'invisible',
       'callback': (response) => {
         // reCAPTCHA solved, allow signInWithPhoneNumber.
         // ...
+        console.log(response);
         setUserLoggedIn(true);
-        setShowOTPField(true);
       },
       'expired-callback': () => {
         // Response expired. Ask user to solve reCAPTCHA again.
         // ...
+        console.log("Expired")
       }
     }, auth);
   }
@@ -95,20 +98,12 @@ export default function Login() {
     let phoneNumber = mobileNumber;
     let appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        const code = '123456';
-        confirmationResult.confirm(code).then((result) => {
-          // User signed in successfully.
-          const user = result.user;
-          console.log(user);
-          // ...
-        }).catch((error) => {
-          // User couldn't sign in (bad verification code?)
-          // ...
-        });
+    .then((confirmationResult) => {
+      console.log(confirmationResult.confirm)
+      window.confirmationResult = confirmationResult;
     })
   }
+
   
   const handleInputChange = (event) => {
     console.log(event.target.id);
@@ -119,10 +114,21 @@ export default function Login() {
       setMobileNumber(event.target.value);
     }
   } 
-  const loginClick = (event) => {
-    // navigate('/chat');
+  const sendOTPHandle = (event) => {
     onSignInSubmit(event);
   };
+
+  const verifyHandle = (event) => {
+    const code = otp;
+    window.confirmationResult.confirm(code).then((result) => {
+      // User signed in successfully.
+      const user = result.user;
+      console.log(user);
+      navigate('/chat');
+    }).catch((error) => {
+      //Catch Error
+    });
+  }
   return (
     <StyledLoginDiv>
       <StyledTitle>Login</StyledTitle>
@@ -130,9 +136,9 @@ export default function Login() {
         <StyledCodeBox>+91</StyledCodeBox>
         <StyledInput type="text" id='phoneNumber' onChange={handleInputChange} value={mobileNumber} placeholder="Enter your phone number" />
       </StyledInputDiv>
-      { !userLoggedIn && <div id='recaptcha-container'></div>}
+      <div id='recaptcha-container' className={userLoggedIn ? 'hide' : '' }></div>
       { userLoggedIn && <StyledInput type="text" id='otp' onChange={handleInputChange} value={otp} placeholder="Enter OTP" />}
-      <StyledButton onClick={loginClick}>Send OTP</StyledButton>
+      { !userLoggedIn ? <StyledButton onClick={sendOTPHandle}>Send OTP</StyledButton> : <StyledButton onClick={verifyHandle}>Verify</StyledButton>}
     </StyledLoginDiv>
   );
 }
