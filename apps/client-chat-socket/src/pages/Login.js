@@ -71,7 +71,8 @@ export default function Login() {
   const [mobileNumber, setMobileNumber] = useState('+911234509876');   
   const navigate = useNavigate();  
   const auth = getAuth();
-  auth.settings.appVerificationDisabledForTesting = true;
+  //uncomment this for virtual numbers
+  // auth.settings.appVerificationDisabledForTesting = true;
   const [isOTPSent, setisOTPSent] = useState(false);
   const [otp, setOtp] = useState("");
 
