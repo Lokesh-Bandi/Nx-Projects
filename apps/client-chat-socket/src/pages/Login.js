@@ -5,6 +5,7 @@ import firebase from '../firebase/firebase.js';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { sendUserInfo } from '../services/ApiCalls'
 
 const StyledLoginDiv = styled.div`
   display: flex;
@@ -116,11 +117,17 @@ export default function Login() {
 
   const verifyOTPCode = (event) => {
     const code = otp;
-    window.confirmationResult.confirm(code).then((result) => {
+    window.confirmationResult.confirm(code).then( async (result) => {
       // User signed in successfully.
       const user = result.user;
       console.log(user);
-      navigate('/chat');
+      let response = await sendUserInfo(user);
+      if(response.status === 200){
+        navigate('/chat');
+      } 
+      else{
+        console.log('server down');
+      }
     }).catch((error) => {
       toast.error('Invalid Verification Code', {
         position: "top-center",

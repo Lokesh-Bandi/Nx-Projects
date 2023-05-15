@@ -1,0 +1,50 @@
+{
+  "name": "server-chat-socket",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/server-chat-socket/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/server-chat-socket",
+        "main": "apps/server-chat-socket/src/main.js",
+        "tsConfig": "apps/server-chat-socket/tsconfig.app.json",
+        "assets": ["apps/server-chat-socket/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/server-chat-socket/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "server-chat-socket:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "server-chat-socket:build:development"
+        },
+        "production": {
+          "buildTarget": "server-chat-socket:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server-chat-socket/**/*.js"]
+      }
+    }
+  },
+  "tags": []
+}
