@@ -15,6 +15,7 @@ const bodyParser = require('body-parser');
 const port = 5500;
 
 const app = express();
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/login', login);
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
