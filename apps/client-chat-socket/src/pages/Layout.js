@@ -3,6 +3,7 @@ import { theme } from '../assets/theme';
 import { ThemeProvider } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
+import { SocketContextProvider } from '../contexts/SocketContextProvider';
 
 const StyledApplication = styled.div`
   display: flex;
@@ -15,12 +16,14 @@ const StyledBox = styled.div`
 `;
 export default function Layout() {
   return (
-    <ThemeProvider theme={theme}>
-      <StyledApplication>
-        <StyledBox>
-          <Outlet />
-        </StyledBox>
-      </StyledApplication>
-    </ThemeProvider>
+    <SocketContextProvider>
+      <ThemeProvider theme={theme}>
+        <StyledApplication>
+          <StyledBox>
+            <Outlet />
+          </StyledBox>
+        </StyledApplication>
+      </ThemeProvider>
+    </SocketContextProvider>
   );
 }

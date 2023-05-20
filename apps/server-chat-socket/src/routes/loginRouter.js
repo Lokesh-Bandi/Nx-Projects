@@ -3,7 +3,6 @@ const express = require('express');
 const loginRouter = express.Router();
 
 loginRouter.post('/', (req, res) => {
-    console.log(req.body)
     res.send("This is login post");
 });
 loginRouter.get('/', (req, res) => {

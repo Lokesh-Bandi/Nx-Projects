@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import useSocket from '../../hooks/useSocket';
+import { sendMessageEvent } from '../../socket/EmittingEvents';
+
 
 const StyldeInputDiv = styled.div`
     display: flex;
@@ -31,9 +34,20 @@ const StyledButton = styled.div`
 `;
 
 export default function InputDiv() {
+  const [msg, setMsg] = useState("");
+  const { isConnected, socket } = useSocket();
+
+  const handleMessage = (event) => {
+    setMsg(event.target.value);
+  }
+  const sendMessage = (event) => {
+    if(isConnected){
+        sendMessageEvent(socket, 'MessageFromClient', {message : msg})
+    }
+  }
   return <StyldeInputDiv>
-    <StyledInput type='text' placeholder='Type here....'/>
-    <StyledButton>
+    <StyledInput type='text' placeholder='Type here....' value={msg} onChange={handleMessage}/>
+    <StyledButton onClick={sendMessage}>
         <img src='../../assets/sendIcon.png' />
     </StyledButton>
   </StyldeInputDiv>

@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 import firebase from './firebase/firebase';
 import login from './routes/loginRouter';
 import { connectDB } from './database/mongoConnectivity';
+import { receiveMessageFromClient } from './controllers/receivingEvents';
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -36,6 +37,8 @@ io.on('connection', (socket) => {
   if (interval) {
     clearInterval(interval);
   }
+  global.socket = socket;
+  receiveMessageFromClient(socket);
   socket.on('disconnect', () => {
     console.log('Client Disconnected');
   });
