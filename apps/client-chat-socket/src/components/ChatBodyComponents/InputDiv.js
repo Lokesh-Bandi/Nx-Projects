@@ -42,7 +42,7 @@ export default function InputDiv() {
   }
   const sendMessage = (event) => {
     if(isConnected){
-        sendMessageEvent(socket, 'MessageFromClient', {message : msg})
+        sendMessageEvent(socket, 'NewMessage', {message : msg}, '+911234509876')
     }
   }
   return <StyldeInputDiv>

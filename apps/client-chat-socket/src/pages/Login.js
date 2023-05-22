@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import firebase from '../firebase/firebase.js';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { sendUserInfo } from '../services/ApiCalls'
+import { sendUserInfo } from '../services/ApiCalls';
+import { useSocket } from '../hooks/useSocket';
 
 const StyledLoginDiv = styled.div`
   display: flex;
@@ -76,6 +77,8 @@ export default function Login() {
   // auth.settings.appVerificationDisabledForTesting = true;
   const [isOTPSent, setisOTPSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const { socket } = useSocket();
+  const socketRef  = useRef(socket.id);
 
   const setRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -121,7 +124,7 @@ export default function Login() {
       // User signed in successfully.
       const user = result.user;
       console.log(user);
-      let response = await sendUserInfo(user);
+      let response = await sendUserInfo(user, socket.id);
       if(response.status === 200){
         navigate('/chat');
       } 
