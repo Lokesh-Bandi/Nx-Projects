@@ -1,3 +1,3 @@
-export const sendMessageEvent = (socket, eventName, data) => {
-    socket.emit('MessageFromClient', {data : data})
+export const sendMessageEvent = (socket, eventName, data, toClient) => {
+    socket.emit('NewMessage', {...data, toClient})
 }

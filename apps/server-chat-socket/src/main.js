@@ -12,7 +12,7 @@ import { connectDB } from './database/mongoConnectivity';
 import { receiveMessageFromClient } from './controllers/receivingEvents';
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+global.socket = {};
 const port = 5500;
 
 const app = express();
@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
   if (interval) {
     clearInterval(interval);
   }
-  global.socket = socket;
+  console.log(global.socket)
   receiveMessageFromClient(socket);
   socket.on('disconnect', () => {
     console.log('Client Disconnected');
