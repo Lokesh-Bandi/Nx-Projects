@@ -1,10 +1,12 @@
 import { createContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { socket } from '../socket/socket';
 
 export const SocketContext = createContext({});
 export const SocketContextProvider = ({children}) => {
 
     const [isConnected, setIsConnected] = useState(socket.connected);
+		const dispatch = useDispatch();
 
     useEffect(() => {
 
@@ -18,13 +20,18 @@ export const SocketContextProvider = ({children}) => {
     
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
-        // socket.on('CurrentTimeEvent', onServerResponse)
+        socket.on('NewMessage', onRecieveMessage);
     
         return () => {
             socket.off('connect', onConnect);
             socket.off('disconnect', onDisconnect);
         }
     }, []);
+
+		const onRecieveMessage = (response) => {
+			console.log("response :",response);
+			dispatch({type: 'NEW_MESSAGE', ...response})
+		}
     
     return <SocketContext.Provider value={{isConnected, socket}}>
         {children}

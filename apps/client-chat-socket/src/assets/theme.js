@@ -11,7 +11,8 @@ export const theme = {
     },
     message: {
         bgColor: '#FFDF80',
-        textColor: '#2b2d2f'
+        textColor: '#2b2d2f',
+        secondaryBgColor: '#bdbdbd'
     },
     button: {
         bgColor: '#F0E68C',
