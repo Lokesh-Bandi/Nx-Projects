@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import useSocket from '../../hooks/useSocket';
 import { sendMessageEvent } from '../../socket/EmittingEvents';
+import { useDispatch } from 'react-redux';
 
 
 const StyldeInputDiv = styled.div`
@@ -36,6 +37,7 @@ const StyledButton = styled.div`
 export default function InputDiv() {
   const [msg, setMsg] = useState("");
   const { isConnected, socket } = useSocket();
+  const dispatch = useDispatch();
 
   const handleMessage = (event) => {
     setMsg(event.target.value);
@@ -44,11 +46,17 @@ export default function InputDiv() {
     if(isConnected){
         sendMessageEvent(socket, 'NewMessage', {message : msg}, '+911234509876')
     }
+    // dispatch({
+    //   type: 'NEW_MESSAGE',
+    //   isUser: true,
+    //   msg: msg
+    // });
+    setMsg('');
   }
   return <StyldeInputDiv>
     <StyledInput type='text' placeholder='Type here....' value={msg} onChange={handleMessage}/>
     <StyledButton onClick={sendMessage}>
-        <img src='../../assets/sendIcon.png' />
+        <img src='../../assets/sendIcon.png' alt=''/>
     </StyledButton>
   </StyldeInputDiv>
 }
