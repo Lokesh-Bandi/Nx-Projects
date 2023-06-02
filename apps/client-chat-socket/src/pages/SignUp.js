@@ -5,7 +5,7 @@ import firebase from '../firebase/firebase.js';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { sendLoginUserInfo } from '../services/ApiCalls';
+import { sendSignUpUserInfo } from '../services/ApiCalls';
 import { useSocket } from '../hooks/useSocket';
 
 const StyledLoginDiv = styled.div`
@@ -69,16 +69,16 @@ const StyledCodeBox = styled.div`
   font-weight: 600;
   background: ${(props) => props.theme.button.bgColor};
 `;
-export default function Login() {
-  const [mobileNumber, setMobileNumber] = useState('+911234509876');   
-  const navigate = useNavigate();  
-  const auth = getAuth();
-  //uncomment this for virtual numbers
-  // auth.settings.appVerificationDisabledForTesting = true;
-  const [isOTPSent, setisOTPSent] = useState(false);
+export default function SignUp() {
+	const navigate = useNavigate();  
+	const auth = getAuth();
+	//uncomment this for virtual numbers
+	// auth.settings.appVerificationDisabledForTesting = true;
+	const [isOTPSent, setisOTPSent] = useState(false);
+	const [mobileNumber, setMobileNumber] = useState('');   
   const [otp, setOtp] = useState("");
+	const [name, setName] = useState("");
   const { socket } = useSocket();
-  const socketRef  = useRef(socket.id);
 
   const setRecaptcha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
@@ -99,7 +99,7 @@ export default function Login() {
   const sendOTP = (event) => {
     event.preventDefault();
     setRecaptcha();
-    let phoneNumber = mobileNumber;
+    let phoneNumber = '+91'+mobileNumber;
     let appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
     .then((confirmationResult) => {
@@ -109,11 +109,16 @@ export default function Login() {
 
   
   const handleInputChange = (event) => {
-    if(event.target.id === 'otp'){
-      setOtp(event.target.value);
-    }
-    else{
-      setMobileNumber(event.target.value);
+    switch(event.target.id){
+        case 'otp': 
+            setOtp(event.target.value);
+            break;
+        case 'name': 
+            setName(event.target.value);
+            break;
+        default:
+            setMobileNumber(event.target.value);
+
     }
   } 
   
@@ -124,7 +129,7 @@ export default function Login() {
       // User signed in successfully.
       const user = result.user;
       console.log(user);
-      let response = await sendLoginUserInfo(user, socket.id);
+      let response = await sendSignUpUserInfo(user, socket.id, name);
       if(response.status === 200){
         navigate('/chat');
       } 
@@ -160,7 +165,11 @@ export default function Login() {
         pauseOnHover
         theme="colored"
       />
-      <StyledTitle>Login</StyledTitle>
+      <StyledTitle>Sign Up</StyledTitle>
+      <StyledInputDiv>
+				<StyledCodeBox>Name</StyledCodeBox>
+				<StyledInput type="text" id='name' onChange={handleInputChange} value={name} placeholder="Enter your name" />
+			</StyledInputDiv>
       <StyledInputDiv>
         <StyledCodeBox>+91</StyledCodeBox>
         <StyledInput type="text" id='phoneNumber' onChange={handleInputChange} value={mobileNumber} placeholder="Enter your phone number" />
@@ -173,9 +182,9 @@ export default function Login() {
       }
       { !isOTPSent ? <StyledButton onClick={sendOTP}>Send OTP</StyledButton> : <StyledButton onClick={verifyOTPCode}>Verify</StyledButton>}
       <div id='recaptcha-container'></div>
-      <StyledInputDiv>
-        For a new user...
-        <StyledButton onClick={() => navigate('/signUp')}>Sign Up!</StyledButton>
+			<StyledInputDiv>
+        Already user...?
+        <StyledButton onClick={() => navigate('/')}>Login</StyledButton>
       </StyledInputDiv>
     </StyledLoginDiv>
   );

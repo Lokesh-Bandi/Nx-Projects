@@ -6,7 +6,7 @@ export const SocketContext = createContext({});
 export const SocketContextProvider = ({children}) => {
 
     const [isConnected, setIsConnected] = useState(socket.connected);
-		const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
     useEffect(() => {
 
@@ -17,6 +17,11 @@ export const SocketContextProvider = ({children}) => {
         function onDisconnect() {
             setIsConnected(false);
         }
+
+        const onRecieveMessage = (response) => {
+            console.log("response :",response);
+            dispatch({type: 'NEW_MESSAGE', ...response})
+        }
     
         socket.on('connect', onConnect);
         socket.on('disconnect', onDisconnect);
@@ -25,13 +30,11 @@ export const SocketContextProvider = ({children}) => {
         return () => {
             socket.off('connect', onConnect);
             socket.off('disconnect', onDisconnect);
+            socket.off('NewMessage', onRecieveMessage);
         }
     }, []);
 
-		const onRecieveMessage = (response) => {
-			console.log("response :",response);
-			dispatch({type: 'NEW_MESSAGE', ...response})
-		}
+   
     
     return <SocketContext.Provider value={{isConnected, socket}}>
         {children}
