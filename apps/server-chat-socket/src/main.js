@@ -8,8 +8,8 @@ import http from 'http';
 import { Server } from 'socket.io';
 import firebase from './firebase/firebase';
 import login from './routes/loginRouter';
-import { connectDB } from './database/mongoConnectivity';
-import { receiveMessageFromClient } from './controllers/receivingEvents';
+import { connectDB, databaseObject } from './database/mongoConnectivity';
+import { listenAndDispatchMessageHandler } from './controllers/listenAndDispatchMessageHandler';
 const cors = require('cors');
 const bodyParser = require('body-parser');
 global.socket = {};
@@ -22,7 +22,6 @@ app.use('/login', login);
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(cors());
 connectDB();
-
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -38,7 +37,7 @@ io.on('connection', (socket) => {
     clearInterval(interval);
   }
   console.log(global.socket)
-  receiveMessageFromClient(socket);
+  listenAndDispatchMessageHandler(socket);
   socket.on('disconnect', () => {
     console.log('Client Disconnected');
   });

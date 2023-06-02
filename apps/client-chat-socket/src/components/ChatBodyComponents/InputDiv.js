@@ -43,6 +43,7 @@ export default function InputDiv() {
     setMsg(event.target.value);
   }
   const sendMessage = (event) => {
+    console.log("name")
     if(isConnected){
         sendMessageEvent(socket, 'NewMessage', {message : msg}, '+911234509876')
     }
